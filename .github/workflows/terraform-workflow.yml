@@ -25,7 +25,7 @@ jobs:
     if: ${{ github.ref != 'refs/heads/main' }}
     name: 'Terraform workflow plan'
 #    needs: env-setup
-    uses: ./.github/workflows/terraform-workflow.yml
+    uses: ./.github/workflows/terraform-actions.yml
     with:
       terraformaction: "plan"
       workingdirectory: ${{ inputs.workingdirectory }} 
@@ -35,7 +35,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     name: 'Terraform workflow apply'
 #    needs: env-setup
-    uses: ./.github/workflows/terraform-workflow.yml
+    uses: ./.github/workflows/terraform-actions.yml
     with:
       terraformaction: "apply"
       workingdirectory: ${{ inputs.workingdirectory }} 
