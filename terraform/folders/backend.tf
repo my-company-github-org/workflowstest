@@ -8,10 +8,4 @@ Your use of it is subject to your agreement with Google.
 terraform {
   backend "gcs" {
   }
-  #   backend "gcs" {
-  #     bucket = "<gcs_bucket_name>"    # Name of the GCS Bucket - must be globally unique.
-  #     prefix = "<bucket_folder_name>" # GCS prefix or folder name used inside the GCS Bucket. For example, "terraform/state/1-folders" can be used.
-  #   }
 }
-#    bucket = "terraformstate928347"
-#    prefix = "terraform/state/gcp_folders"

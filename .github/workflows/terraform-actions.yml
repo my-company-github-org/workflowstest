@@ -1,0 +1,65 @@
+name: "Terraform infra action"
+
+on:
+  workflow_call:
+    inputs:
+      workingdirectory:
+        required: true
+        type: string
+      terraformaction:
+        required: true
+        type: string
+
+jobs:
+  plan_workflow_job:
+    name: 'terraform'
+    runs-on: self-hosted
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.workingdirectory }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Print banner
+      run: echo "Running TF"
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      env:
+        TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
+        TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
+        GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_IMPERSONATE_SERVICE_ACCOUNT }}
+      run: |
+        pwd
+        ls -al
+        echo "Terraform init with backend: $TF_VARS_backendgcpbucket / $TF_VARS_backendgcpprefix / $TFVARS_billing_account_id"
+        terraform init
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: |
+        terraform fmt -check -diff
+
+    - name: Terraform Plan
+      if: ${{ inputs.terraformaction == 'plan' || inputs.terraformaction == 'apply' }}
+      env:
+        TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
+        TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
+        GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_IMPERSONATE_SERVICE_ACCOUNT }}
+      run: |
+        terraform plan -input=false
+
+    - name: Terraform Apply
+      if: inputs.terraformaction == 'apply'
+      env:
+        TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
+        TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
+        GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_IMPERSONATE_SERVICE_ACCOUNT }}
+      run: |
+        terraform apply -auto-approve -input=false

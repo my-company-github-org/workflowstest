@@ -1,0 +1,19 @@
+name: "Terraform infra folders"
+
+on:
+  push:
+    paths:
+      - folders/**
+
+jobs:
+  tf-folders:
+    strategy:
+      matrix:
+        dirs: [{
+                "path": "folders",
+                "prefix": "terraform2/state/gcp_folder"
+              }]
+    uses: ./.github/workflows/terraform-workflow.yml
+    with:
+      workingdirectory: ${{ matrix.dirs.path }}
+      backendgcpprefix: ${{ matrix.dirs.prefix }}

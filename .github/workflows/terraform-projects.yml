@@ -1,0 +1,22 @@
+name: "Terraform infra projects"
+
+on:
+  push:
+    paths:
+      - projects/**
+
+jobs:
+  tf-projects:
+    strategy:
+      matrix:
+        dirs: [{
+                "path": "projects/nonprod-host",
+                "prefix": "terraform2/state/nonprod-host"
+              }, {
+                "path": "projects/prod-host", 
+                "prefix": "terraform2/state/prod-host"
+              }]
+    uses: ./.github/workflows/terraform-workflow.yml
+    with:
+      workingdirectory: ${{ matrix.dirs.path }}
+      backendgcpprefix: ${{ matrix.dirs.prefix }}

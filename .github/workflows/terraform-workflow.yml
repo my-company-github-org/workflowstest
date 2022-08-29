@@ -1,0 +1,42 @@
+name: "Terraform infra workflow"
+
+on:
+  workflow_call:
+    inputs:
+      workingdirectory:
+        required: true
+        type: string
+      backendgcpprefix:
+        required: false
+        type: string
+
+jobs:
+  env-setup:
+    name: 'Setup vars'
+    runs-on: self-hosted
+#    outputs:
+#      backendgcpbucket: ${{ env.backendgcpbucket }}
+#      backendgcpprefix: ${{ env.backendgcpfix }}
+    steps:
+      - id: dummystep 
+        run: echo ""
+
+  tf-plan:
+    if: ${{ github.ref != 'refs/heads/main' }}
+    name: 'Terraform workflow plan'
+#    needs: env-setup
+    uses: ./.github/workflows/terraform-workflow.yml
+    with:
+      terraformaction: "plan"
+      workingdirectory: ${{ inputs.workingdirectory }} 
+      backendgcpprefix: ${{ inputs.backendgcpprefix }}
+
+  tf-apply:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    name: 'Terraform workflow apply'
+#    needs: env-setup
+    uses: ./.github/workflows/terraform-workflow.yml
+    with:
+      terraformaction: "apply"
+      workingdirectory: ${{ inputs.workingdirectory }} 
+      backendgcpprefix: ${{ inputs.backendgcpprefix }}
