@@ -7,7 +7,7 @@ on:
 
 jobs:
   tf-folders:
-    environment: development
+#    environment: development
     strategy:
       matrix:
         dirs: [{
