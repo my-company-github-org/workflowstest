@@ -14,6 +14,7 @@ jobs:
   plan_workflow_job:
     name: 'terraform'
     runs-on: self-hosted
+    environment: dev
 
     defaults:
       run:
@@ -34,6 +35,7 @@ jobs:
       env:
         TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
         TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
+        TF_VAR_parent_folder_id: ${{ secrets.parent_folder_id }}
         GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_IMPERSONATE_SERVICE_ACCOUNT }}
       run: |
         pwd
@@ -51,15 +53,19 @@ jobs:
       env:
         TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
         TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
+        TF_VAR_parent_folder_id: ${{ secrets.parent_folder_id }}
         GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_IMPERSONATE_SERVICE_ACCOUNT }}
       run: |
         terraform plan -input=false
 
-    - name: Terraform Apply
-      if: inputs.terraformaction == 'apply'
-      env:
-        TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
-        TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
-        GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_IMPERSONATE_SERVICE_ACCOUNT }}
-      run: |
-        terraform apply -auto-approve -input=false
+  apply_workflow_job:
+    if: inputs.terraformaction == 'apply'
+    name: Terraform Apply
+    environment: production
+    env:
+      TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
+      TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
+      TF_VAR_parent_folder_id: ${{ secrets.parent_folder_id }}
+      GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_IMPERSONATE_SERVICE_ACCOUNT }}
+    run: |
+      terraform apply -auto-approve -input=false

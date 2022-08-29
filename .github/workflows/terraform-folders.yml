@@ -18,4 +18,3 @@ jobs:
     with:
       workingdirectory: ${{ matrix.dirs.path }}
       backendgcpprefix: ${{ matrix.dirs.prefix }}
-    environment: staging_environment
