@@ -3,7 +3,7 @@ name: "Terraform infra projects"
 on:
   push:
     paths:
-      - projects/**
+      - terraform/projects/**
 
 jobs:
   tf-projects:

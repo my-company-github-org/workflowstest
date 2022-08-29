@@ -3,7 +3,7 @@ name: "Terraform infra folders"
 on:
   push:
     paths:
-      - folders/**
+      - terraform/folders/**
 
 jobs:
   tf-folders:
