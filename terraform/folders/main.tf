@@ -6,6 +6,7 @@ module "folders" {
   source  = "../../modules/terraform-google-folders"
 
   parent  = var.parent
+
   names = [
     "common",
     "prod",
