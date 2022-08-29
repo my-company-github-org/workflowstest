@@ -12,7 +12,7 @@ on:
 
 jobs:
   plan_workflow_job:
-    name: 'terraform'
+    name: 'terraformplan'
     runs-on: self-hosted
     environment: dev
 
@@ -60,9 +60,12 @@ jobs:
 
   apply_workflow_job:
     if: inputs.terraformaction == 'apply'
+    name: 'terraformapply'
+    runs-on: self-hosted
+    environment: production
+
     steps:
     - name: Terraform Apply
-      environment: production
       env:
         TF_VAR_billing_account_id: ${{ secrets.TF_VAR_billing_account_id }}
         TF_VAR_backend_gcp_bucket: ${{ secrets.TF_VAR_backend_gcp_bucket }}
